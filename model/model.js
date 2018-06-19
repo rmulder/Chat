@@ -12,9 +12,9 @@ mongoose.connection.on('error', function (err) {
     console.log(err);
 });
 
-mongoose.connect('mongodb://localhost/mongodb');
+mongoose.createConnection('mongodb://localhost/mongodb');
 
-module.exports.user=mongoose.model('User',new Schema({
+module.exports.user = mongoose.model('User', new Schema({
     name:String,
     handle: String,
     password: String,
@@ -22,11 +22,13 @@ module.exports.user=mongoose.model('User',new Schema({
     email:String,
     friends:[]
 },{strict: false}));
-module.exports.online=mongoose.model('online',new Schema({
+
+module.exports.online = mongoose.model('online', new Schema({
     handle:String,
     connection_id:String
 }));
-module.exports.messages=mongoose.model('message',new Schema({
+
+module.exports.messages = mongoose.model('message', new Schema({
     message : String,
     sender  : String,
     reciever: String,
