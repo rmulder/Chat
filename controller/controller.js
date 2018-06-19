@@ -11,12 +11,12 @@ module.exports = function (app, io) {
     }));
     
     app.get('/', function(req, res) {
-        res.sendFile(path.resolve(__dirname+"/../views/index.html"));
+        res.sendFile(path.resolve(__dirname + "/../views/index.html"));
     });
     
     app.post('/register', function(req, res) {
         res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader("Access-Control-Allow-Method","'GET, POST, OPTIONS, PUT, PATCH, DELETE'");
+        res.setHeader("Access-Control-Allow-Method", "'GET, POST, OPTIONS, PUT, PATCH, DELETE'");
         var user = {
             "name":req.body.name,
             "handle":req.body.handle,
@@ -32,7 +32,7 @@ module.exports = function (app, io) {
             }
 
             if (doc == null) {
-                models.user.create(user,function(err,doc){
+                models.user.create(user, function(err, doc) {
                     if (err) {
                         res.json(err);
                     } else {
@@ -54,9 +54,9 @@ module.exports = function (app, io) {
     app.post('/login',function(req, res) {
         console.log(req.body.handle);
         res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader("Access-Control-Allow-Method","'GET, POST, OPTIONS, PUT, PATCH, DELETE'");
+        res.setHeader("Access-Control-Allow-Method", "'GET, POST, OPTIONS, PUT, PATCH, DELETE'");
         handle = req.body.handle;
-        models.user.findOne({"handle":req.body.handle, "password": req.body.password}, function(err, doc) {
+        models.user.findOne({"handle": req.body.handle, "password": req.body.password}, function(err, doc) {
             if (err) {
                 res.send(err); 
             }
@@ -108,7 +108,7 @@ module.exports = function (app, io) {
                 console.log("friends list: ", friends);
                 io.to(socket.id).emit('friend_list', friends);
                 io.to(socket.id).emit('pending_list', pending);
-                io.emit('users',users);
+                io.emit('users', users);
             }
         });
         
@@ -120,9 +120,9 @@ module.exports = function (app, io) {
         socket.on('private message', function(msg) {
             console.log('message  :' + msg.split("#*@")[0]);
             models.messages.create({
-                "message":msg.split("#*@")[1],
-                "sender" :msg.split("#*@")[2],
-                "reciever":msg.split("#*@")[0],
+                "message": msg.split("#*@")[1],
+                "sender" : msg.split("#*@")[2],
+                "reciever": msg.split("#*@")[0],
                 "date" : new Date()});
             io.to(users[msg.split("#*@")[0]]).emit('private message', msg);
         });
@@ -137,7 +137,7 @@ module.exports = function (app, io) {
     
     app.post('/friend_request', function(req, res) {
         res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader("Access-Control-Allow-Method","'GET, POST, OPTIONS, PUT, PATCH, DELETE'");
+        res.setHeader("Access-Control-Allow-Method", "'GET, POST, OPTIONS, PUT, PATCH, DELETE'");
         friend = true;
 
         models.user.find({"handle" : req.body.my_handle,"friends.name": req.body.friend_handle}, function(err, doc) {
@@ -161,7 +161,7 @@ module.exports = function (app, io) {
                 },{
                     upsert: true
                 },function(err, doc) {
-                    if (err){
+                    if (err) {
                         res.json(err);
                     }
                     //            else{
@@ -176,7 +176,7 @@ module.exports = function (app, io) {
     
     app.post('/friend_request/confirmed', function(req, res) {
         console.log("friend request confirmed : " + req.body);
-        if(req.body.confirm=="Yes") {
+        if (req.body.confirm == "Yes") {
             models.user.find({
                 "handle" : req.body.friend_handle,
                 "friends.name": req.body.my_handle
